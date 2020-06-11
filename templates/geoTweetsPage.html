@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+            crossorigin="anonymous">
+
+    </script>
+</head>
+<body>
+
+    <h1>Geography Tweet Analyzer</h1>
+    <h3>Project by X, Contact X</h3>
+    <div>
+        <input type="text" class="js-state-search" id="searchBox" />
+    </div>
+    <div>
+        <button class="searchButton" style="background-color: black; width:
+        40px; height: 30px;" onClick=stateSearch()>
+        </button>
+    </div>
+    <div>
+        <input type="text" class="js-int-search" id="IntsearchBox" />
+    </div>
+    <div>
+        <button class="searchButton" style="background-color: black; width:
+        40px; height: 30px;" onClick=intGrab()>
+        </button>
+    </div>
+    <div>
+        <button class="showStatesRankedButton" style="background-color: blue; width:
+        40px; height: 30px;" onClick=getData()>
+        </button>
+    </div>
+
+    <script>
+        var searchedState = document.getElementById("searchBox");
+        var searchedInt = document.getElementById("IntsearchBox");
+        function getData() {
+        data = {
+        "third": 1,
+        "fourth": "Virginia"
+        }
+        $.ajax({
+            type: "POST",
+            url: "/data2",
+              data: data,
+              success: function(data) {
+                  handleData(data);
+                }
+            })
+        }
+ 
+        function handleData(data) {
+            console.log(data);
+       }
+  
+        function stateSearch() {
+            var name = searchedState.value;
+            console.log("u can search " + name);
+        }
+        function intGrab() {
+            var x = searchedInt.value;
+            console.log("ur int was " + x);
+        }
+    </script>
+</body>
+</html>
