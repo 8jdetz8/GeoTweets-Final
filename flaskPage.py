@@ -17,15 +17,14 @@ def second():
 @app.route('/data2', methods = ["POST"])
 def third():
     import subprocess
-    arg3 = int(request.data["third"])
-    if arg3 == 1:
-        arg3
-    else:
-        arg4 = request.data["fourth"]
-
+    print(request.form)
+    arg3 = int(request.form["third"])
+    arg4 = " "
+    if arg3 != 1:
+        arg4 = request.form["fourth"]
 
     output = subprocess.check_output(
-    ['java', 'C:\\Users\\Student\\SDE\\4thTryGeoTweets\\src\\main\\java\\geotweets', 'all_tweets.txt', 'states.csv', arg3, arg4])
+    ['java', 'C:\\Users\\Student\\SDE\\4thTryGeoTweets\\src\\main\\java\\geotweets', 'C:\\Users\\Student\\LearningJavascript\\LearningFlask\\project\\all_tweets.txt', 'C:\\Users\\Student\\LearningJavascript\\LearningFlask\\project\\states.csv', str(arg3), arg4])
     return output
 
 
