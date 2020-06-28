@@ -1,70 +1,116 @@
 ﻿<!DOCTYPE html>
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+
 <head>
     <meta charset="utf-8" />
-    <script src="https://code.jquery.com/jquery-3.5.1.js"
-            integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
-            crossorigin="anonymous">
-
+    <script src="https://code.jquery.com/jquery-3.5.1.js" integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous">
     </script>
+    <title>hello</title>
 </head>
+
 <body>
 
-    <h1>Geography Tweet Analyzer</h1>
-    <h3>Project by X, Contact X</h3>
+    <h1 style="color:red;text-align:center;"> Geography Tweet Analyzer</h1>
+    <h3>Project by JD Etz, Contact jde4zt@virginia.edu</h3>
+    <h3>Enter 1 to rank states by number of tweets. <br> Enter 2 to search a states most popular hashtags. <br> Enter 3 to search how often a hashtag has appeared.
+    </h3>
+
     <div>
-        <input type="text" class="js-state-search" id="searchBox" />
+        <button class="optionOne" style="color: red; display: block; margin-left: auto; margin-right: auto;" onClick=rankStates()>
+        Rank States by Tweets!</button>
     </div>
+
     <div>
-        <button class="searchButton" style="background-color: black; width:
-        40px; height: 30px;" onClick=stateSearch()>
-        </button>
+        <button class="optionTwo" style="color: blue; display: block; margin-left: auto; margin-right: auto;" onClick=searchStates()>
+        Search a State's Most Popular Tweets!</button>
     </div>
+
     <div>
-        <input type="text" class="js-int-search" id="IntsearchBox" />
+        <input type="text" placeholder="Enter your state here or phrase here" class="input-block" id="stateSearchBox" />
     </div>
+
     <div>
-        <button class="searchButton" style="background-color: black; width:
-        40px; height: 30px;" onClick=intGrab()>
-        </button>
-    </div>
-    <div>
-        <button class="showStatesRankedButton" style="background-color: blue; width:
+        <button class="runProgram" style="background-color: blue; width:
         40px; height: 30px;" onClick=getData()>
         </button>
     </div>
 
+    <div>
+        <h3 id="printText">
+            "Old text" </h3>
+    </div>
     <script>
-        var searchedState = document.getElementById("searchBox");
-        var searchedInt = document.getElementById("IntsearchBox");
-        function getData() {
-        data = {
-        "third": 1,
-        "fourth": "Virginia"
-        }
-        $.ajax({
-            type: "POST",
-            url: "/data2",
-              data: data,
-              success: function(data) {
-                  handleData(data);
+        var searchedState = document.getElementById("stateSearchBox");
+        var searchedInt = document.getElementById("intChoiceBox");
+
+        function rankStates() {
+            data = {
+                "third": 1,
+                "forth": "Virginia"
+            }
+            $.ajax({
+                type: "POST",
+                url: "/data2",
+                data: data,
+                success: function(data) {
+                    handleData(data);
                 }
             })
         }
- 
+
+        function searchStates() {
+            var state = prompt("What state would you like to search?")
+            console.log("entered " + state);
+            console.log(typeof(state));
+            data = {
+                "third": 2,
+                "forth": state
+            }
+            $.ajax({
+                type: "POST",
+                url: "/data2",
+                data: data,
+                success: function(data) {
+                    handleData(data);
+                }
+            })
+        }
+
+        function getData() {
+            console.log("entered " + searchedInt.value)
+            data = {
+                "third": Number(searchedInt.value),
+                "fourth": searchedState.value
+            }
+            $.ajax({
+                type: "POST",
+                url: "/data2",
+                data: data,
+                success: function(data) {
+                    handleData(data);
+                }
+            })
+        }
+
         function handleData(data) {
+            var textArea = document.getElementById("printText")
+            textArea.innerHTML = "hello";
+            textArea.innerText = data;
+
             console.log(data);
-       }
-  
+        }
+
         function stateSearch() {
             var name = searchedState.value;
             console.log("u can search " + name);
         }
+
         function intGrab() {
             var x = searchedInt.value;
             console.log("ur int was " + x);
         }
     </script>
 </body>
+
 </html>
