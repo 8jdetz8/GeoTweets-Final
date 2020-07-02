@@ -49,10 +49,10 @@ public class HW1CommandLineUI {
         //System.out.println("Now loading...");
         controller.load(); //preloads tweet and state information into memory (optional, deleting this call will just
         //make the first operation slower
-        while(!quit) { //repeat until quitting time
+        //while(!quit) { //repeat until quitting time
             System.out.println();//blank line for visual flair
             menu();
-        }
+        //}
         sc.close();
     }
 
@@ -119,7 +119,7 @@ public class HW1CommandLineUI {
     private void displayStateHashTags() {
         String stateName = this.search; //get a state from the user
         if (!controller.isAStateName(stateName)) { //if the state doesn't exist
-            System.out.println("Invalid state name. Returning to the main menu.");
+            System.out.println("Invalid state name. Please try again!");
             return; //end function call
         }
         //get the hash tag counts from the state
