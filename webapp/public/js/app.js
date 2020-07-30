@@ -2,6 +2,9 @@
 const btn = document.querySelector('#searchBtn');
 const canvas = document.querySelector('#graph');
 const status = document.querySelector('#status');
+
+canvas.height = window.innerHeight - 200;
+
 const ctx = canvas.getContext('2d');
 let isLoading = false;
 let chart;
@@ -47,14 +50,22 @@ function loadGraph (data, program){
         data: {
             labels: data.labels,
             datasets: [{
-                label: `Results for "${data.sterm}"`,
+                label: `Results for "${data.sterm || 'Country'}"`,
                 backgroundColor: 'rgb(0,180,204)',
                 borderColor: 'rgb(0, 180, 204)',
                 data: data.dataset
             }]
         },
         // Configuration options go here
-        options: {}
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
     });
 }
 
@@ -66,17 +77,26 @@ btn.addEventListener('click', (ev)=>{
     
     const program = document.querySelector('#program');
     const sterm = document.querySelector('#searchTerm');
+    const pvalue = program.value;
+    const svalue = sterm.value;
     
+    if (chart) chart.destroy();
+
+    if (!svalue && pvalue != 1) {
+        status.innerText = 'Please input a search term';
+        isLoading = false;
+        return;
+    }
+
     btn.disabled = true;
-    if (chart) chart.destroy();   
     status.innerText = 'Loading...';
 
-    const dataPromise = getData(Number(program.value), sterm.value);
+    const dataPromise = getData(Number(pvalue), svalue);
     dataPromise.then(data => formatData(data)).then(data =>{
         status.innerText = '';
         btn.disabled = false;
         isLoading = false;
-        data.sterm = sterm.value;
-        loadGraph(data, program.value);
+        data.sterm = svalue;
+        loadGraph(data, pvalue);
     });
 });

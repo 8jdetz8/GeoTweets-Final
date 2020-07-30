@@ -15,7 +15,7 @@ const cache = {};
 app.use(express.static('public'));
 
 app.get('/api/:program/search/:sterm', async (req, res)=>{
-    let data = await getData(req.params.program, req.params.sterm);
+    let data = await getData(req.params);
     res.json(data);
 });
 
@@ -30,20 +30,20 @@ function hashtags(line) {
     return obj;
 }
 
-async function getData(program, sterm){
+async function getData({program, sterm}){
     //  dumb 'cache' for a faster response
     if (cache[program]) {
        if (cache[program][sterm]) return cache[program][sterm];
     }
-
     const { stdout, stderr } = await exec(
-        `java -cp ${japp} geotweets.GeoTweets ${atweets} ${astates} ${program} '${sterm}'`
+        `java -cp "${japp}" geotweets.GeoTweets "${atweets}" "${astates}" ${program} "${sterm}"`
         );
     if (stderr) return {error: stderr}
    
     let lines = stdout.split('\n');
     
-    lines = lines.filter(el => el !== '').map((line)=>{
+    lines = lines.filter(el => /\d/.test(el)).map((line)=>{
+
         if (program == 3) return hashtags(line);
         let words = line.trim().split(' ');
         let js = {
