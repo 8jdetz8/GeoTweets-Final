@@ -21,6 +21,7 @@ app.get('/api/:program/search/:sterm', async (req, res)=>{
 
 
 function hashtags(line) {
+    console.log(line);
     let col = line.split(' ');
     let obj = {
         date: col.shift(),

@@ -12,6 +12,7 @@ let chart;
 async function getData(prog, sterm='Virginia'){
     if (prog > 3) return;
     let term = (sterm || 'Virginia').replace(/\//, '');
+    if (/\#/.test(term)) term = term.replace('#','');
     return fetch(`/api/${prog}/search/${term}`).then(res => res.json());
 }
 
@@ -40,17 +41,22 @@ function clearCanvas(){
     return true;
 }
 
+
+
 function loadGraph (data, program){ 
     let gtype = 'bar';
-    if (program == '3') gtype = 'line';
+    let label = 'States Ranked By Tweet Count';
+
+    if (program == '3') gtype = 'line', label =`Most Frequent Time of ${data.sterm}` ;
+    if (program == '2') label = `Most Popular Hashtags in ${data.sterm}`; 
+
     clearCanvas();
-    
     chart = new Chart(ctx, {
         type: gtype,
         data: {
             labels: data.labels,
             datasets: [{
-                label: `Results for "${data.sterm || 'Country'}"`,
+                label: label,
                 backgroundColor: 'rgb(0,180,204)',
                 borderColor: 'rgb(0, 180, 204)',
                 data: data.dataset
@@ -69,7 +75,7 @@ function loadGraph (data, program){
     });
 }
 
-btn.addEventListener('click', (ev)=>{
+function searchAction(ev){
     if (isLoading) return;
     isLoading = true;
     ev.preventDefault();
@@ -81,22 +87,35 @@ btn.addEventListener('click', (ev)=>{
     const svalue = sterm.value;
     
     if (chart) chart.destroy();
-
+    
     if (!svalue && pvalue != 1) {
         status.innerText = 'Please input a search term';
         isLoading = false;
         return;
     }
-
+    
     btn.disabled = true;
     status.innerText = 'Loading...';
-
+    
     const dataPromise = getData(Number(pvalue), svalue);
     dataPromise.then(data => formatData(data)).then(data =>{
         status.innerText = '';
         btn.disabled = false;
         isLoading = false;
+        if (data.dataset.length == 0) {
+            if (pvalue == '2') status.innerHTML = `<i>"${svalue}"</i> is not a valid State, try again.`;
+            if (pvalue == '3') status.innerHTML = `<i>"${svalue}"</i> not found, try again.`;
+            return;
+        }
         data.sterm = svalue;
         loadGraph(data, pvalue);
     });
-});
+}
+
+btn.addEventListener('click', ev => searchAction(ev));
+
+document.onkeydown = function (ev) {
+    if (window.event.keyCode == '13') {
+        searchAction(ev)
+    }
+}
