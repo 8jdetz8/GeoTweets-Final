@@ -1,10 +1,14 @@
 const express = require('express');
 const util = require('util');
+const path = require('path');
 const exec = util.promisify(require('child_process').exec);
 
 const app = express();
 
-const japp = `${__dirname}/../project`;
+const japp = path.normalize(__dirname + '/../project')
+const atweets = path.normalize(__dirname + '/../project/all_tweets.txt');
+const astates = path.normalize(__dirname + '/../project/states.csv');
+
 const port = 3000;
 const cache = {};
 
@@ -33,7 +37,7 @@ async function getData(program, sterm){
     }
 
     const { stdout, stderr } = await exec(
-        `java -cp ${japp} geotweets.GeoTweets ${japp}/all_tweets.txt ${japp}/states.csv ${program} '${sterm}'`
+        `java -cp ${japp} geotweets.GeoTweets ${atweets} ${astates} ${program} '${sterm}'`
         );
     if (stderr) return {error: stderr}
    
