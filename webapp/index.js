@@ -21,12 +21,12 @@ app.get('/api/:program/search/:sterm', async (req, res)=>{
 
 
 function hashtags(line) {
-    console.log(line);
+   
     let col = line.split(' ');
     let obj = {
-        date: col.shift(),
         hour: col.shift(),
-        val: Number(col.shift())
+        val: Number(col.shift()),
+        desc: col.shift()
     }
     return obj;
 }

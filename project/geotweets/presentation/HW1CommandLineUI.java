@@ -92,22 +92,39 @@ public class HW1CommandLineUI {
         //get phrase
         String phrase = this.search;
         Map<String, Integer> phraseTweetMap = controller.getTweetsForPhrase(phrase);
+        Map<String, Integer> phraseByHour = new HashMap<String, Integer>();
         //check if any matches
         if (phraseTweetMap.isEmpty()) {
             System.out.println("Phrase not found.");
         } else {
             phraseTweetMap
-                    .entrySet()
-                    .stream()
-                    .sorted(comparingByKey())
-                    .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new)) //referenced my stream from earlier.
-                    .forEach((K, V) -> {
-                        try {
-                            System.out.println(convertBackDate(K) + " " + V + " times");
-                        } catch (ParseException e) {
-                            e.printStackTrace();
+                .entrySet()
+                .stream()
+                .sorted(comparingByKey())
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new)) //referenced my stream from earlier.
+                .forEach((K, V) -> {
+                    try {
+                        String hour = convertBackDate(K);
+                        
+                        if (phraseByHour.containsKey(hour)) {
+                            Integer oldVal = phraseByHour.get(hour);
+                            phraseByHour.replace(hour, oldVal + V);
+                        } else {
+                            phraseByHour.put(hour, V);
                         }
-                    });
+                        
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                });
+            phraseByHour
+                .entrySet()
+                .stream()
+                .sorted(comparingByKey())     
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e2, LinkedHashMap::new))
+                .forEach((K, V) -> {
+                    System.out.println(K + " " + V + " times");
+                });
         }
         quit = true;
     }
@@ -220,7 +237,7 @@ public class HW1CommandLineUI {
      */
     private String convertBackDate(String oldDate) throws ParseException {
         String oldFormat = "yyyy-MM-dd'T'HH':'mm";
-        String newFormat = "yyyy-MM-dd HH':'mm"; //https://stackoverflow.com/questions/3469507/how-can-i-change-the-date-format-in-java
+        String newFormat = "HH':'mm"; //https://stackoverflow.com/questions/3469507/how-can-i-change-the-date-format-in-java
         SimpleDateFormat sdf = new SimpleDateFormat(oldFormat);
         Date d = sdf.parse(oldDate);
         sdf.applyPattern(newFormat);

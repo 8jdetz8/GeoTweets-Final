@@ -21,7 +21,7 @@ function formatData(data){
     let dataset = [];
 
     data.forEach((ln)=>{
-        if (ln.date) labels.push(`${ln.date} - ${ln.hour}`);
+        if (ln.hour) labels.push(`${ln.hour}`);
         else labels.push(ln.item);
         dataset.push(ln.val);
     });
@@ -47,8 +47,8 @@ function loadGraph (data, program){
     let gtype = 'bar';
     let label = 'States Ranked By Tweet Count';
 
-    if (program == '3') gtype = 'line', label =`Most Frequent Time of ${data.sterm}` ;
-    if (program == '2') label = `Most Popular Hashtags in ${data.sterm}`; 
+    if (program == '3') gtype = 'line', label =`Most Frequent Time of "${data.sterm}"` ;
+    if (program == '2') label = `Most Popular Hashtags in "${data.sterm}"`; 
 
     clearCanvas();
     chart = new Chart(ctx, {
